@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MAN Stadium Tickets | Moshood Abiola National Stadium</title>
+
+    <!-- Google Fonts: Inter & Caveat / Kalam for handwriting placeholders -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Kalam:wght@400;700&family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        maroon: "#6D0808",
+                        maroonDark: "#4A0505",
+                        orange: "#F59E0B",
+                        cream: "#F7F2EA",
+                        ink: "#171717"
+                    },
+                    fontFamily: {
+                        sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+                        handwriting: ["Caveat", "Kalam", "cursive"]
+                    },
+                    boxShadow: {
+                        soft: "0 20px 60px rgba(0,0,0,.12)"
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+        }
+
+        /* Handwriting fonts for all placeholders */
+        input::placeholder,
+        textarea::placeholder,
+        select::placeholder,
+        ::placeholder {
+            font-family: 'Caveat', 'Kalam', cursive !important;
+            font-size: 1.15rem !important;
+            font-weight: 600 !important;
+            letter-spacing: 0.02em !important;
+        }
+
+        .hero-overlay {
+            background:
+                linear-gradient(90deg, rgba(27, 3, 3, .90) 0%, rgba(55, 5, 5, .68) 46%, rgba(0, 0, 0, .20) 100%);
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, .92);
+            backdrop-filter: blur(12px);
+        }
+
+        .ticket-cut {
+            position: relative;
+        }
+
+        .ticket-cut::before,
+        .ticket-cut::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 18px;
+            height: 18px;
+            background: #F7F2EA;
+            border-radius: 999px;
+            transform: translateY(-50%);
+        }
+
+        .ticket-cut::before {
+            left: -9px;
+        }
+
+        .ticket-cut::after {
+            right: -9px;
+        }
+    </style>
+</head>
+
+<body class="bg-cream text-ink">
+
+    <!-- NAVBAR -->
+    <header id="site-header"
+        class="fixed top-0 left-0 right-0 z-50 bg-maroonDark/90 backdrop-blur-md border-b border-white/10 shadow-md">
+        <nav id="site-nav"
+            class="mx-auto flex max-w-7xl items-center justify-between px-5 py-2.5 transition-all duration-300 ease-in-out lg:px-8">
+            <a href="#" class="flex items-center gap-2.5 text-white">
+                <div
+                    class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-amber-500 to-orange text-maroon shadow-md shadow-orange/30 transition hover:scale-105">
+                    <!-- New Stadium Logo -->
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2 13c0 4.4 4.5 8 10 8s10-3.6 10-8" />
+                        <path d="M2 13c0-4.4 4.5-8 10-8s10 3.6 10 8" />
+                        <path d="M6 13c0 2.2 2.7 4 6 4s6-1.8 6-4" />
+                        <path d="M6 13c0-2.2 2.7-4 6-4s6 1.8 6 4" />
+                        <circle cx="12" cy="13" r="1.5" fill="currentColor" />
+                        <path d="M12 2v3" />
+                        <path d="M5 4l2 2" />
+                        <path d="M19 4l-2 2" />
+                    </svg>
+                </div>
+                <div>
+                    <div class="text-base font-extrabold leading-none tracking-tight">MAN STADIUM</div>
+                    <div class="mt-0.5 text-[9px] font-medium uppercase tracking-[.22em] text-white/70">
+                        Official Ticketing
+                    </div>
+                </div>
+            </a>
+
+            <div class="hidden items-center gap-7 text-xs font-semibold uppercase tracking-wider text-white/90 md:flex">
+                <a href="#events" class="transition hover:text-orange">Events</a>
+                <a href="#how" class="transition hover:text-orange">How It Works</a>
+                <a href="#about" class="transition hover:text-orange">About Stadium</a>
+                <a href="#contact" class="transition hover:text-orange">Contact</a>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <a id="nav-auth-btn" href="login.html"
+                    class="rounded-lg px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-white/10 active:scale-95">
+                    Sign In
+                </a>
+                <a id="nav-get-tickets-btn" href="login.html"
+                    class="rounded-lg bg-orange px-3.5 py-1.5 text-xs font-bold text-maroon shadow-md shadow-orange/20 transition hover:bg-amber-400 active:scale-95">
+                    Get Tickets
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- HERO -->
+    <section class="relative bg-maroon">
+        <!-- Overflow hidden only on the background image wrapper so the search bar is never clipped -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <!-- Replace this URL with your own stadium image in production -->
+            <img src="https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=2200&q=90"
+                alt="Football stadium" class="h-full w-full object-cover" />
+            <div class="hero-overlay absolute inset-0"></div>
+        </div>
+
+        <div class="relative mx-auto flex min-h-[560px] max-w-7xl items-center px-5 pb-20 pt-24 lg:px-8 lg:pt-28">
+            <div class="grid w-full items-center gap-8 lg:grid-cols-12">
+                <!-- Left text content: balanced and aligned with the stadium visual -->
+                <div class="max-w-xl text-white lg:col-span-7">
+                    <div
+                        class="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1 text-[11px] font-bold uppercase tracking-[.18em] backdrop-blur">
+                        <span class="h-2 w-2 rounded-full bg-orange"></span>
+                        Abuja's premier sporting destination
+                    </div>
+
+                    <h1 class="text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
+                        Your seat.<br />
+                        <span class="text-orange">Your moment.</span>
+                    </h1>
+
+                    <p class="mt-4 max-w-xl text-sm leading-6 text-white/80 sm:text-base">
+                        Reserve your official match and event tickets at
+                        <strong class="text-white">Moshood Abiola National Stadium, Abuja.</strong>
+                        Choose your event, select your seat and secure your place in seconds.
+                    </p>
+
+                    <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+                        <a href="#events"
+                            class="rounded-xl bg-orange px-6 py-3.5 text-center text-xs font-extrabold uppercase tracking-wider text-maroon shadow-xl shadow-orange/20 transition hover:-translate-y-0.5 hover:bg-amber-400">
+                            Browse Events →
+                        </a>
+                        <a href="#how"
+                            class="rounded-xl border border-white/30 bg-white/10 px-6 py-3.5 text-center text-xs font-bold uppercase tracking-wider text-white backdrop-blur transition hover:bg-white/15">
+                            How It Works
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right Side: Moshood Abiola Stadium image blending with background -->
+                <div class="relative lg:col-span-5 hidden lg:flex items-center justify-center">
+                    <!-- Ambient stadium glow -->
+                    <div class="absolute -inset-4 rounded-full bg-orange/20 blur-3xl"></div>
+
+                    <div
+                        class="relative w-full overflow-hidden rounded-3xl border border-white/15 bg-gradient-to-tr from-maroonDark/90 via-maroonDark/60 to-transparent p-2 shadow-2xl backdrop-blur-sm">
+                        <!-- Stadium image container with smooth gradient fades for blending -->
+                        <div class="relative h-[320px] w-full overflow-hidden rounded-2xl">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/d/d2/Football_heaven.jpg"
+                                alt="Moshood Abiola National Stadium, Abuja"
+                                class="h-full w-full object-cover object-center transition duration-700 hover:scale-105"
+                                onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Moshood_Abiola_National_Stadium%2C_Abuja.jpg/1280px-Moshood_Abiola_National_Stadium%2C_Abuja.jpg';" />
+
+                            <!-- Vignette & blending overlays into maroon background -->
+                            <div
+                                class="pointer-events-none absolute inset-0 bg-gradient-to-t from-maroonDark via-maroonDark/30 to-transparent opacity-90">
+                            </div>
+                            <div
+                                class="pointer-events-none absolute inset-0 bg-gradient-to-r from-maroonDark/70 via-transparent to-maroonDark/40">
+                            </div>
+
+                            <!-- Stadium tag / capacity badge -->
+                            <div
+                                class="absolute bottom-3 left-3 right-3 flex items-center justify-between rounded-xl bg-maroonDark/85 p-3 backdrop-blur-md border border-white/15 shadow-lg">
+                                <div class="flex items-center gap-2.5">
+                                    <div
+                                        class="flex h-7 w-7 items-center justify-center rounded-lg bg-orange/20 text-orange">
+                                        <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2">
+                                            <path
+                                                d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+                                            <circle cx="12" cy="9" r="2.5" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-black text-white">Moshood Abiola Stadium</p>
+                                        <p class="text-[10px] text-white/70">Abuja, Nigeria • 60,491 Capacity</p>
+                                    </div>
+                                </div>
+                                <span
+                                    class="rounded-md bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-emerald-300 border border-emerald-500/30">
+                                    Live Venue
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search / reservation bar: elevated and in flow so it is NEVER hidden -->
+    <div class="relative z-30 -mt-10 mx-auto max-w-6xl px-5">
+        <div class="grid gap-0 overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-black/10 md:grid-cols-4">
+            <div class="border-b border-gray-200 p-4 md:border-b-0 md:border-r">
+                <p class="text-xs font-bold uppercase tracking-wider text-gray-400">Event</p>
+                <select class="mt-1.5 w-full bg-transparent text-sm font-bold text-gray-800 outline-none">
+                    <option>All Events</option>
+                    <option>Football Matches</option>
+                    <option>Concerts</option>
+                    <option>Athletics</option>
+                </select>
+            </div>
+
+            <div class="border-b border-gray-200 p-4 md:border-b-0 md:border-r">
+                <p class="text-xs font-bold uppercase tracking-wider text-gray-400">Date</p>
+                <input type="date" class="mt-1.5 w-full bg-transparent text-sm font-bold text-gray-800 outline-none" />
+            </div>
+
+            <div class="border-b border-gray-200 p-4 md:border-b-0 md:border-r">
+                <p class="text-xs font-bold uppercase tracking-wider text-gray-400">Ticket Type</p>
+                <select class="mt-1.5 w-full bg-transparent text-sm font-bold text-gray-800 outline-none">
+                    <option>Any Category</option>
+                    <option>Regular</option>
+                    <option>VIP</option>
+                    <option>VVIP</option>
+                </select>
+            </div>
+
+            <a href="login.html"
+                class="reserve-btn m-2.5 flex items-center justify-center rounded-xl bg-maroon px-5 py-3.5 text-xs font-extrabold uppercase tracking-wider text-white shadow-md transition hover:bg-maroonDark active:scale-95">
+                Find Tickets
+            </a>
+        </div>
+    </div>
+
+    <!-- EVENTS -->
+    <section id="events" class="mx-auto max-w-7xl px-5 pb-16 pt-16 lg:px-8">
+        <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+            <div>
+                <p class="text-xs font-extrabold uppercase tracking-[.18em] text-orange">Upcoming Events</p>
+                <h2 class="mt-1.5 text-3xl font-black tracking-tight text-maroon sm:text-4xl">
+                    Don't miss the action
+                </h2>
+                <p class="mt-2 max-w-2xl text-sm text-gray-500">
+                    Secure your seat before tickets run out. All tickets are digitally issued after successful payment.
+                </p>
+            </div>
+            <a href="#" class="text-xs font-bold text-maroon hover:underline">View all events →</a>
+        </div>
+
+        <div class="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+
+            <!-- Event card 1 -->
+            <article
+                class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+                <div class="relative h-36 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=1000&q=85"
+                        alt="Football event" class="h-full w-full object-cover transition duration-500 hover:scale-105">
+                    <span
+                        class="absolute left-3 top-3 rounded-full bg-orange px-2.5 py-0.5 text-[10px] font-black text-maroon">
+                        FOOTBALL
+                    </span>
+                </div>
+                <div class="p-4">
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Sat • 4:00 PM</p>
+                    <h3 class="mt-1 text-base font-black text-gray-900">National League Match</h3>
+                    <p class="mt-1 text-xs text-gray-500">Moshood Abiola National Stadium</p>
+                    <div class="mt-3.5 flex items-center justify-between border-t border-gray-100 pt-3">
+                        <div>
+                            <span class="text-[10px] uppercase font-bold text-gray-400">From</span>
+                            <p class="text-base font-black text-maroon">₦3,000</p>
+                        </div>
+                        <a href="login.html"
+                            class="reserve-btn rounded-lg bg-maroon px-3.5 py-1.5 text-xs font-bold text-white transition hover:bg-maroonDark active:scale-95">
+                            Reserve Seat
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Event card 2 -->
+            <article
+                class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+                <div class="relative h-36 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=1000&q=85"
+                        alt="Concert" class="h-full w-full object-cover transition duration-500 hover:scale-105">
+                    <span
+                        class="absolute left-3 top-3 rounded-full bg-orange px-2.5 py-0.5 text-[10px] font-black text-maroon">
+                        CONCERT
+                    </span>
+                </div>
+                <div class="p-4">
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Fri • 7:00 PM</p>
+                    <h3 class="mt-1 text-base font-black text-gray-900">Abuja Live Music Festival</h3>
+                    <p class="mt-1 text-xs text-gray-500">Moshood Abiola National Stadium</p>
+                    <div class="mt-3.5 flex items-center justify-between border-t border-gray-100 pt-3">
+                        <div>
+                            <span class="text-[10px] uppercase font-bold text-gray-400">From</span>
+                            <p class="text-base font-black text-maroon">₦5,000</p>
+                        </div>
+                        <a href="login.html"
+                            class="reserve-btn rounded-lg bg-maroon px-3.5 py-1.5 text-xs font-bold text-white transition hover:bg-maroonDark active:scale-95">
+                            Reserve Seat
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Event card 3 -->
+            <article
+                class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+                <div class="relative h-36 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1000&q=85"
+                        alt="Athletics event"
+                        class="h-full w-full object-cover transition duration-500 hover:scale-105">
+                    <span
+                        class="absolute left-3 top-3 rounded-full bg-orange px-2.5 py-0.5 text-[10px] font-black text-maroon">
+                        ATHLETICS
+                    </span>
+                </div>
+                <div class="p-4">
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Sun • 2:00 PM</p>
+                    <h3 class="mt-1 text-base font-black text-gray-900">Abuja Athletics Championship</h3>
+                    <p class="mt-1 text-xs text-gray-500">Moshood Abiola National Stadium</p>
+                    <div class="mt-3.5 flex items-center justify-between border-t border-gray-100 pt-3">
+                        <div>
+                            <span class="text-[10px] uppercase font-bold text-gray-400">From</span>
+                            <p class="text-base font-black text-maroon">₦2,000</p>
+                        </div>
+                        <a href="login.html"
+                            class="reserve-btn rounded-lg bg-maroon px-3.5 py-1.5 text-xs font-bold text-white transition hover:bg-maroonDark active:scale-95">
+                            Reserve Seat
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+    </section>
+
+    <!-- WHY US -->
+    <section id="how" class="bg-maroon py-20 text-white">
+        <div class="mx-auto max-w-7xl px-5 lg:px-8">
+            <div class="max-w-2xl">
+                <p class="text-sm font-extrabold uppercase tracking-[.18em] text-orange">Simple & Secure</p>
+                <h2 class="mt-2 text-3xl font-black sm:text-4xl">Your ticket journey in 4 steps</h2>
+            </div>
+
+            <div class="mt-12 grid gap-5 md:grid-cols-4">
+                <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+                    <span class="text-3xl font-black text-orange">01</span>
+                    <h3 class="mt-5 text-lg font-black">Choose an event</h3>
+                    <p class="mt-2 text-sm leading-6 text-white/60">Browse upcoming matches, concerts and stadium
+                        events.</p>
+                </div>
+                <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+                    <span class="text-3xl font-black text-orange">02</span>
+                    <h3 class="mt-5 text-lg font-black">Select your seat</h3>
+                    <p class="mt-2 text-sm leading-6 text-white/60">View the stadium seating map and choose an available
+                        seat.</p>
+                </div>
+                <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+                    <span class="text-3xl font-black text-orange">03</span>
+                    <h3 class="mt-5 text-lg font-black">Pay securely</h3>
+                    <p class="mt-2 text-sm leading-6 text-white/60">Complete your reservation using a supported payment
+                        method.</p>
+                </div>
+                <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+                    <span class="text-3xl font-black text-orange">04</span>
+                    <h3 class="mt-5 text-lg font-black">Get your ticket</h3>
+                    <p class="mt-2 text-sm leading-6 text-white/60">Receive your digital ticket and use the QR code at
+                        entry.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STADIUM INFO -->
+    <section id="about" class="mx-auto max-w-7xl px-5 py-20 lg:px-8">
+        <div class="grid items-center gap-12 lg:grid-cols-2">
+            <div class="overflow-hidden rounded-3xl">
+                <img src="https://images.unsplash.com/photo-1551958219-acbc608c6377?auto=format&fit=crop&w=1400&q=85"
+                    alt="Stadium seating" class="h-[440px] w-full object-cover">
+            </div>
+            <div>
+                <p class="text-sm font-extrabold uppercase tracking-[.18em] text-orange">The Venue</p>
+                <h2 class="mt-3 text-4xl font-black tracking-tight text-maroon">
+                    Moshood Abiola National Stadium
+                </h2>
+                <p class="mt-5 leading-7 text-gray-600">
+                    Experience major sporting and entertainment events at Nigeria's iconic national stadium in Abuja.
+                    Our digital reservation platform makes it easier to discover events, select seats and manage your
+                    tickets.
+                </p>
+
+                <div class="mt-8 grid grid-cols-2 gap-4">
+                    <div class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
+                        <p class="text-3xl font-black text-maroon">60,491</p>
+                        <p class="mt-1 text-sm text-gray-500">Total capacity</p>
+                    </div>
+                    <div class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
+                        <p class="text-3xl font-black text-maroon">24/7</p>
+                        <p class="mt-1 text-sm text-gray-500">Online booking</p>
+                    </div>
+                </div>
+
+                <a href="#"
+                    class="mt-8 inline-flex rounded-xl bg-maroon px-6 py-3 text-sm font-bold text-white hover:bg-maroonDark">
+                    Explore the Stadium →
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="px-5 pb-20">
+        <div class="mx-auto max-w-7xl overflow-hidden rounded-3xl bg-orange px-6 py-14 text-center sm:px-10">
+            <p class="text-sm font-black uppercase tracking-[.18em] text-maroon/70">Ready for the experience?</p>
+            <h2 class="mt-3 text-4xl font-black tracking-tight text-maroon sm:text-5xl">
+                Secure your seat today.
+            </h2>
+            <p class="mx-auto mt-4 max-w-xl text-maroon/70">
+                Don't wait until match day. Find your event and reserve your preferred seat online.
+            </p>
+            <a href="login.html"
+                class="reserve-btn mt-7 inline-flex rounded-xl bg-maroon px-7 py-4 text-sm font-extrabold text-white shadow-lg transition hover:bg-maroonDark active:scale-95">
+                Browse Available Tickets
+            </a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer id="contact" class="bg-[#250303] text-white">
+        <div class="mx-auto grid max-w-7xl gap-10 px-5 py-12 md:grid-cols-4 lg:px-8">
+            <div class="md:col-span-2">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-amber-500 to-orange text-maroon shadow-md shadow-orange/30">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2 13c0 4.4 4.5 8 10 8s10-3.6 10-8" />
+                            <path d="M2 13c0-4.4 4.5-8 10-8s10 3.6 10 8" />
+                            <path d="M6 13c0 2.2 2.7 4 6 4s6-1.8 6-4" />
+                            <path d="M6 13c0-2.2 2.7-4 6-4s6 1.8 6 4" />
+                            <circle cx="12" cy="13" r="1.5" fill="currentColor" />
+                            <path d="M12 2v3" />
+                            <path d="M5 4l2 2" />
+                            <path d="M19 4l-2 2" />
+                        </svg>
+                    </div>
+                    <div class="font-black">MAN STADIUM TICKETS</div>
+                </div>
+                <p class="mt-4 max-w-md text-sm leading-6 text-white/50">
+                    Official-style digital ticket reservation experience for events at Moshood Abiola National Stadium,
+                    Abuja.
+                </p>
+            </div>
+
+            <div>
+                <h3 class="font-bold">Quick Links</h3>
+                <div class="mt-4 space-y-3 text-sm text-white/50">
+                    <a href="#events" class="block hover:text-orange">Events</a>
+                    <a href="#how" class="block hover:text-orange">How It Works</a>
+                    <a href="#about" class="block hover:text-orange">About</a>
+                    <a href="login.html" class="block hover:text-orange">Sign In / Register</a>
+                    <a href="#" class="block hover:text-orange">FAQs</a>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="font-bold">Support</h3>
+                <div class="mt-4 space-y-3 text-sm text-white/50">
+                    <p>Abuja, Nigeria</p>
+                    <p>support@manstadium.test</p>
+                    <p>+234 800 000 0000</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="border-t border-white/10">
+            <div
+                class="mx-auto flex max-w-7xl flex-col justify-between gap-3 px-5 py-5 text-xs text-white/40 sm:flex-row lg:px-8">
+                <p>© 2026 MAN Stadium Ticketing System. All rights reserved.</p>
+                <div class="flex gap-5">
+                    <a href="#" class="hover:text-white">Privacy</a>
+                    <a href="#" class="hover:text-white">Terms</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Check Auth State -->
+    <script>
+        (async function () {
+            try {
+                const res = await fetch('/api/auth/me', { credentials: 'include' });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.success && data.user) {
+                        // Update nav Sign In button
+                        const btn = document.getElementById('nav-auth-btn');
+                        if (btn) {
+                            btn.href = 'dashboard.html';
+                            btn.className = 'flex items-center gap-1.5 rounded-lg bg-orange px-3 py-1.5 text-xs font-bold text-maroon shadow transition hover:bg-amber-400 active:scale-95';
+                            btn.innerHTML = `<span class="h-2 w-2 rounded-full bg-emerald-600"></span> Dashboard (${data.user.name.split(' ')[0]})`;
+                        }
+                        // Update Get Tickets navbar button
+                        const getTicketsBtn = document.getElementById('nav-get-tickets-btn');
+                        if (getTicketsBtn) {
+                            getTicketsBtn.href = 'dashboard.html';
+                        }
+                        // Update all Reserve Seat / Find Tickets buttons to go directly to dashboard
+                        document.querySelectorAll('.reserve-btn').forEach(el => {
+                            el.href = 'dashboard.html';
+                        });
+                    }
+                }
+            } catch (e) { }
+        })();
+    </script>
+</body>
+
+</html>
