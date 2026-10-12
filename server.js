@@ -1115,9 +1115,46 @@ app.delete('/api/admin/events/:id', authMiddleware, adminMiddleware, (req, res) 
 // Serve static frontend files
 app.use(express.static(__dirname));
 
-// Fallback to index.html for root
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+// Resilient file server helper for local and Vercel serverless environments
+function sendHtmlFile(res, filename) {
+    const primaryPath = path.join(__dirname, filename);
+    if (fs.existsSync(primaryPath)) {
+        return res.sendFile(primaryPath);
+    }
+    const altPath = path.join(process.cwd(), filename);
+    if (fs.existsSync(altPath)) {
+        return res.sendFile(altPath);
+    }
+    const apiParentPath = path.join(__dirname, '..', filename);
+    if (fs.existsSync(apiParentPath)) {
+        return res.sendFile(apiParentPath);
+    }
+    return res.status(404).send(`File ${filename} not found`);
+}
+
+// HTML Page Routes (supports both clean URLs and .html extensions)
+app.get(['/', '/index', '/index.html'], (req, res) => {
+    sendHtmlFile(res, 'index.html');
+});
+
+app.get(['/login', '/login.html'], (req, res) => {
+    sendHtmlFile(res, 'login.html');
+});
+
+app.get(['/signup', '/signup.html'], (req, res) => {
+    sendHtmlFile(res, 'signup.html');
+});
+
+app.get(['/dashboard', '/dashboard.html'], (req, res) => {
+    sendHtmlFile(res, 'dashboard.html');
+});
+
+// Catch-all route: returns index.html for unknown frontend routes, 404 JSON for unknown API routes
+app.use((req, res) => {
+    if (req.path.startsWith('/api')) {
+        return res.status(404).json({ success: false, message: `Endpoint ${req.method} ${req.path} not found` });
+    }
+    sendHtmlFile(res, 'index.html');
 });
 
 // Start Server (only when run directly in Node.js)
