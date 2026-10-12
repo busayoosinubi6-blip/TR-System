@@ -1115,8 +1115,20 @@ app.delete('/api/admin/events/:id', authMiddleware, adminMiddleware, (req, res) 
 // Serve static frontend files
 app.use(express.static(__dirname));
 
+// Load pre-bundled HTML templates for ultra-fast, 100% reliable serving in serverless environments
+let htmlPages = {};
+try {
+    htmlPages = require('./html_pages');
+} catch (e) {
+    console.warn('html_pages not loaded, using fallback');
+}
+
 // Resilient file server helper for local and Vercel serverless environments
-function sendHtmlFile(res, filename) {
+function sendHtmlFile(res, pageKey, filename) {
+    if (htmlPages && htmlPages[pageKey]) {
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        return res.send(htmlPages[pageKey]);
+    }
     const primaryPath = path.join(__dirname, filename);
     if (fs.existsSync(primaryPath)) {
         return res.sendFile(primaryPath);
@@ -1134,19 +1146,19 @@ function sendHtmlFile(res, filename) {
 
 // HTML Page Routes (supports both clean URLs and .html extensions)
 app.get(['/', '/index', '/index.html'], (req, res) => {
-    sendHtmlFile(res, 'index.html');
+    sendHtmlFile(res, 'index', 'index.html');
 });
 
 app.get(['/login', '/login.html'], (req, res) => {
-    sendHtmlFile(res, 'login.html');
+    sendHtmlFile(res, 'login', 'login.html');
 });
 
 app.get(['/signup', '/signup.html'], (req, res) => {
-    sendHtmlFile(res, 'signup.html');
+    sendHtmlFile(res, 'signup', 'signup.html');
 });
 
 app.get(['/dashboard', '/dashboard.html'], (req, res) => {
-    sendHtmlFile(res, 'dashboard.html');
+    sendHtmlFile(res, 'dashboard', 'dashboard.html');
 });
 
 // Catch-all route: returns index.html for unknown frontend routes, 404 JSON for unknown API routes
@@ -1154,7 +1166,7 @@ app.use((req, res) => {
     if (req.path.startsWith('/api')) {
         return res.status(404).json({ success: false, message: `Endpoint ${req.method} ${req.path} not found` });
     }
-    sendHtmlFile(res, 'index.html');
+    sendHtmlFile(res, 'index', 'index.html');
 });
 
 // Start Server (only when run directly in Node.js)
