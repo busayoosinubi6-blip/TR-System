@@ -1,30 +1,6 @@
 {
   "users": [
     {
-      "id": "user_demo_1",
-      "name": "Chukwudi Adeleke",
-      "email": "fan@manstadium.ng",
-      "phone": "+234 803 123 4567",
-      "passwordHash": "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f",
-      "role": "member",
-      "walletBalance": 40000,
-      "favoriteGate": "Gate 3 (West Tribune)",
-      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
-      "createdAt": "2026-09-01T12:00:00.000Z"
-    },
-    {
-      "id": "user_1790798829642_2c6u7",
-      "name": "Amaka Obi",
-      "email": "amaka@example.com",
-      "phone": "+234 802 345 6789",
-      "passwordHash": "0ecf0285c52337d198723ffcb06c19313d1790be40acb6c6887e1810e5ada879",
-      "role": "member",
-      "walletBalance": 15000,
-      "favoriteGate": "Gate 2 (General Entrance)",
-      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
-      "createdAt": "2026-09-30T20:07:09.642Z"
-    },
-    {
       "id": "user_admin_01",
       "name": "Col. Sanusi Bello",
       "email": "admin@manstadium.ng",
@@ -47,6 +23,30 @@
       "favoriteGate": "Gate 3 (West Tribune)",
       "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80",
       "createdAt": "2026-08-20T10:00:00.000Z"
+    },
+    {
+      "id": "user_demo_1",
+      "name": "Chukwudi Adeleke",
+      "email": "fan@manstadium.ng",
+      "phone": "+234 803 123 4567",
+      "passwordHash": "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f",
+      "role": "member",
+      "walletBalance": 40000,
+      "favoriteGate": "Gate 3 (West Tribune)",
+      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
+      "createdAt": "2026-09-01T12:00:00.000Z"
+    },
+    {
+      "id": "user_1790798829642_2c6u7",
+      "name": "Amaka Obi",
+      "email": "amaka@example.com",
+      "phone": "+234 802 345 6789",
+      "passwordHash": "0ecf0285c52337d198723ffcb06c19313d1790be40acb6c6887e1810e5ada879",
+      "role": "member",
+      "walletBalance": 15000,
+      "favoriteGate": "Gate 2 (General Entrance)",
+      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
+      "createdAt": "2026-09-30T20:07:09.642Z"
     },
     {
       "id": "user_1790901310720_us3bj",
@@ -78,7 +78,8 @@
         "vip": 20000
       },
       "capacity": 60491,
-      "availableSeats": 1417
+      "availableSeats": 1417,
+      "createdAt": "2026-10-06T23:15:25.927Z"
     },
     {
       "id": "ev_2",
@@ -96,7 +97,8 @@
         "vip": 35000
       },
       "capacity": 50000,
-      "availableSeats": 859
+      "availableSeats": 859,
+      "createdAt": "2026-10-06T23:15:25.940Z"
     },
     {
       "id": "ev_3",
@@ -114,7 +116,8 @@
         "vip": 15000
       },
       "capacity": 45000,
-      "availableSeats": 2150
+      "availableSeats": 2150,
+      "createdAt": "2026-10-06T23:15:25.941Z"
     },
     {
       "id": "ev_4",
@@ -132,7 +135,8 @@
         "vip": 18000
       },
       "capacity": 60491,
-      "availableSeats": 3399
+      "availableSeats": 3399,
+      "createdAt": "2026-10-06T23:15:25.942Z"
     }
   ],
   "tickets": [
@@ -148,11 +152,11 @@
       "section": "Block D - East Terrace",
       "seat": "Row 4, Seat 49",
       "price": 2500,
-      "barcode": "9837894156390",
-      "qrCodeData": "MAN-STADIUM-PASS:TKT-MAN-91548:user_demo_1:ev_4:ROW4-SEAT49",
       "status": "ACTIVE",
-      "bookedAt": "2026-10-06T21:27:15.103Z",
-      "holderName": "Chukwudi Adeleke"
+      "qrData": "TKT-MAN-91548",
+      "holderName": "Chukwudi Adeleke",
+      "transferredFrom": null,
+      "bookedAt": "2026-10-06T21:27:15.103Z"
     },
     {
       "id": "TKT-MAN-84080",
@@ -166,11 +170,11 @@
       "section": "Block D - East Terrace",
       "seat": "Row 13, Seat 5",
       "price": 3000,
-      "barcode": "9837578751461",
-      "qrCodeData": "MAN-STADIUM-PASS:TKT-MAN-84080:user_demo_1:ev_1:ROW13-SEAT5",
       "status": "ACTIVE",
-      "bookedAt": "2026-10-06T21:09:07.332Z",
-      "holderName": "Chukwudi Adeleke"
+      "qrData": "TKT-MAN-84080",
+      "holderName": "Chukwudi Adeleke",
+      "transferredFrom": null,
+      "bookedAt": "2026-10-06T21:09:07.332Z"
     },
     {
       "id": "TKT-MAN-68103",
@@ -184,11 +188,11 @@
       "section": "Block D - East Terrace",
       "seat": "Row 18, Seat 59",
       "price": 3000,
-      "barcode": "9833607711481",
-      "qrCodeData": "MAN-STADIUM-PASS:TKT-MAN-68103:user_1790901310720_us3bj:ev_1:ROW18-SEAT59",
       "status": "ACTIVE",
-      "bookedAt": "2026-10-02T00:35:51.248Z",
-      "holderName": "Busayo Beatrice"
+      "qrData": "TKT-MAN-68103",
+      "holderName": "Busayo Beatrice",
+      "transferredFrom": null,
+      "bookedAt": "2026-10-02T00:35:51.248Z"
     },
     {
       "id": "TKT-MAN-67497",
@@ -202,12 +206,11 @@
       "section": "Block C - Covered Grandstand",
       "seat": "Row 21, Seat 4",
       "price": 7500,
-      "barcode": "9833853509414",
-      "qrCodeData": "MAN-STADIUM-PASS:TKT-MAN-67497:user_demo_1:ev_1:ROW21-SEAT4",
       "status": "CANCELLED",
-      "bookedAt": "2026-10-01T22:28:15.937Z",
+      "qrData": "TKT-MAN-67497",
       "holderName": "Chukwudi Adeleke",
-      "cancelledAt": "2026-10-01T22:28:16.126Z"
+      "transferredFrom": null,
+      "bookedAt": "2026-10-01T22:28:15.937Z"
     },
     {
       "id": "TKT-MAN-97339",
@@ -221,14 +224,11 @@
       "section": "Block C - Covered Grandstand",
       "seat": "Row 10, Seat 14",
       "price": 7500,
-      "barcode": "9833857849848",
-      "qrCodeData": "MAN-STADIUM-PASS:TKT-MAN-97339:user_demo_1:ev_1:ROW10-SEAT14",
       "status": "USED",
-      "bookedAt": "2026-10-01T22:28:15.937Z",
+      "qrData": "TKT-MAN-97339",
       "holderName": "Chukwudi Adeleke",
-      "scannedAt": "2026-10-01T22:28:15.955Z",
-      "scannedGate": "Gate 3 (West Tribune)",
-      "turnstileId": "TURNSTILE-G3-01"
+      "transferredFrom": null,
+      "bookedAt": "2026-10-01T22:28:15.937Z"
     },
     {
       "id": "TKT-MAN-60327",
@@ -242,14 +242,11 @@
       "section": "Block C - Covered Grandstand",
       "seat": "Row 2, Seat 37",
       "price": 12000,
-      "barcode": "9838820857713",
-      "qrCodeData": "MAN-STADIUM-PASS:TKT-MAN-60327:user_demo_1:ev_2:ROW2-SEAT37",
       "status": "USED",
-      "bookedAt": "2026-09-30T20:06:46.105Z",
+      "qrData": "TKT-MAN-60327",
       "holderName": "Chukwudi Adeleke",
-      "scannedAt": "2026-10-01T22:34:39.592Z",
-      "scannedGate": "Gate 1 (Popular Entrance)",
-      "turnstileId": "OPTICAL-TURNSTILE-01"
+      "transferredFrom": null,
+      "bookedAt": "2026-09-30T20:06:46.105Z"
     },
     {
       "id": "TKT-MAN-90214",
@@ -263,289 +260,235 @@
       "section": "Block C - Upper Tier",
       "seat": "Row 12, Seat 44",
       "price": 7500,
-      "barcode": "9834271890214",
-      "qrCodeData": "MAN-STADIUM-PASS:TKT-MAN-90214:user_demo_1:ev_1:ROW12-SEAT44",
       "status": "ACTIVE",
-      "bookedAt": "2026-09-28T10:14:00.000Z",
-      "holderName": "Chukwudi Adeleke"
+      "qrData": "TKT-MAN-90214",
+      "holderName": "Chukwudi Adeleke",
+      "transferredFrom": null,
+      "bookedAt": "2026-09-28T10:14:00.000Z"
     }
   ],
   "transactions": [
     {
       "id": "TXN-TOP-654686",
       "userId": "user_steward_01",
-      "type": "TOPUP",
       "amount": 2000,
+      "type": "TOPUP",
       "description": "Wallet Top-up via Quick Pay",
       "reference": "REF-TOP-6694709",
-      "date": "2026-10-06T21:45:00.393Z",
-      "status": "SUCCESS"
+      "date": "2026-10-06T21:45:00.393Z"
     },
     {
       "id": "TXN-TOP-510384",
       "userId": "user_steward_01",
-      "type": "TOPUP",
       "amount": 2000,
+      "type": "TOPUP",
       "description": "Wallet Top-up via Quick Pay",
       "reference": "REF-TOP-4382022",
-      "date": "2026-10-06T21:44:55.068Z",
-      "status": "SUCCESS"
+      "date": "2026-10-06T21:44:55.068Z"
     },
     {
       "id": "TXN-TOP-621219",
       "userId": "user_steward_01",
-      "type": "TOPUP",
       "amount": 5000,
+      "type": "TOPUP",
       "description": "Wallet Top-up via Quick Pay",
       "reference": "REF-TOP-5447372",
-      "date": "2026-10-06T21:40:49.779Z",
-      "status": "SUCCESS"
+      "date": "2026-10-06T21:40:49.779Z"
     },
     {
       "id": "TXN-BKG-572514",
       "userId": "user_demo_1",
-      "type": "BOOKING",
       "amount": -2500,
+      "type": "BOOKING",
       "description": "Match Pass (1) - NPFL Derby: Enyimba FC vs Kano Pillars [Popular Terrace]",
       "reference": "TKT-MAN-91548",
-      "date": "2026-10-06T21:27:15.104Z",
-      "status": "SUCCESS"
+      "date": "2026-10-06T21:27:15.104Z"
     },
     {
       "id": "TXN-TOP-977761",
       "userId": "user_demo_1",
-      "type": "TOPUP",
       "amount": 25000,
+      "type": "TOPUP",
       "description": "Wallet Top-up via Quick Pay",
       "reference": "REF-TOP-7939514",
-      "date": "2026-10-06T21:26:40.830Z",
-      "status": "SUCCESS"
+      "date": "2026-10-06T21:26:40.830Z"
     },
     {
       "id": "TXN-TOP-314580",
       "userId": "user_demo_1",
-      "type": "TOPUP",
       "amount": 10000,
+      "type": "TOPUP",
       "description": "Wallet Top-up via Quick Pay",
       "reference": "REF-TOP-4954874",
-      "date": "2026-10-06T21:09:53.483Z",
-      "status": "SUCCESS"
+      "date": "2026-10-06T21:09:53.483Z"
     },
     {
       "id": "TXN-BKG-769828",
       "userId": "user_demo_1",
-      "type": "BOOKING",
       "amount": -3000,
+      "type": "BOOKING",
       "description": "Match Pass (1) - Nigeria Super Eagles vs Ghana Black Stars [Popular Terrace]",
       "reference": "TKT-MAN-84080",
-      "date": "2026-10-06T21:09:07.333Z",
-      "status": "SUCCESS"
+      "date": "2026-10-06T21:09:07.333Z"
     },
     {
       "id": "TXN-TOP-673894",
       "userId": "user_1790901310720_us3bj",
-      "type": "TOPUP",
       "amount": 10000,
+      "type": "TOPUP",
       "description": "Wallet Top-up via Quick Pay",
       "reference": "REF-TOP-7778554",
-      "date": "2026-10-02T00:36:10.302Z",
-      "status": "SUCCESS"
+      "date": "2026-10-02T00:36:10.302Z"
     },
     {
       "id": "TXN-TOP-124617",
       "userId": "user_1790901310720_us3bj",
-      "type": "TOPUP",
       "amount": 5000,
+      "type": "TOPUP",
       "description": "Wallet Top-up via Quick Pay",
       "reference": "REF-TOP-6891201",
-      "date": "2026-10-02T00:36:08.210Z",
-      "status": "SUCCESS"
+      "date": "2026-10-02T00:36:08.210Z"
     },
     {
       "id": "TXN-BKG-757918",
       "userId": "user_1790901310720_us3bj",
-      "type": "BOOKING",
       "amount": -3000,
+      "type": "BOOKING",
       "description": "Match Pass (1) - Nigeria Super Eagles vs Ghana Black Stars [Popular Terrace]",
       "reference": "TKT-MAN-68103",
-      "date": "2026-10-02T00:35:51.249Z",
-      "status": "SUCCESS"
+      "date": "2026-10-02T00:35:51.249Z"
     },
     {
       "id": "TXN-TOP-944613",
       "userId": "user_1790901310720_us3bj",
-      "type": "TOPUP",
       "amount": 15000,
+      "type": "TOPUP",
       "description": "New Stadium Member Welcome Credit Bonus",
       "reference": "WELCOME-BONUS-2026",
-      "date": "2026-10-02T00:35:10.725Z",
-      "status": "SUCCESS"
+      "date": "2026-10-02T00:35:10.725Z"
     },
     {
       "id": "TXN-REF-140808",
       "userId": "user_demo_1",
-      "type": "REFUND",
       "amount": 7500,
+      "type": "REFUND",
       "description": "Refund for Cancelled Pass (TKT-MAN-67497) - Nigeria Super Eagles vs Ghana Black Stars",
       "reference": "TKT-MAN-67497",
-      "date": "2026-10-01T22:28:16.126Z",
-      "status": "SUCCESS"
+      "date": "2026-10-01T22:28:16.126Z"
     },
     {
       "id": "TXN-BKG-371875",
       "userId": "user_demo_1",
-      "type": "BOOKING",
       "amount": -15000,
+      "type": "BOOKING",
       "description": "Match Pass (2) - Nigeria Super Eagles vs Ghana Black Stars [Covered Grandstand]",
       "reference": "TKT-MAN-97339, TKT-MAN-67497",
-      "date": "2026-10-01T22:28:15.938Z",
-      "status": "SUCCESS"
-    },
-    {
-      "id": "TXN-TOP-849102",
-      "userId": "user_demo_1",
-      "type": "TOPUP",
-      "amount": 25000,
-      "description": "Wallet Top-up via Instant Card Transfer",
-      "reference": "REF-PAY-9812401",
-      "date": "2026-09-28T09:30:00.000Z",
-      "status": "SUCCESS"
-    },
-    {
-      "id": "TXN-BKG-90214",
-      "userId": "user_demo_1",
-      "type": "BOOKING",
-      "amount": -7500,
-      "description": "Ticket Pass (1) - Super Eagles vs Ghana (Covered)",
-      "reference": "TKT-MAN-90214",
-      "date": "2026-09-28T10:14:00.000Z",
-      "status": "SUCCESS"
-    },
-    {
-      "id": "TXN-BKG-60327",
-      "userId": "user_demo_1",
-      "type": "BOOKING",
-      "amount": -12000,
-      "description": "Ticket Pass (1) - Abuja Live Music & Cultural Festival",
-      "reference": "TKT-MAN-60327",
-      "date": "2026-09-30T20:06:46.105Z",
-      "status": "SUCCESS"
+      "date": "2026-10-01T22:28:15.938Z"
     },
     {
       "id": "TXN-TOP-102931",
       "userId": "user_demo_1",
-      "type": "TOPUP",
       "amount": 12500,
+      "type": "TOPUP",
       "description": "Wallet Top-up bonus reward & deposit",
       "reference": "REF-PAY-7734129",
-      "date": "2026-10-01T15:00:00.000Z",
-      "status": "SUCCESS"
+      "date": "2026-10-01T15:00:00.000Z"
+    },
+    {
+      "id": "TXN-BKG-60327",
+      "userId": "user_demo_1",
+      "amount": -12000,
+      "type": "BOOKING",
+      "description": "Ticket Pass (1) - Abuja Live Music & Cultural Festival",
+      "reference": "TKT-MAN-60327",
+      "date": "2026-09-30T20:06:46.105Z"
+    },
+    {
+      "id": "TXN-BKG-90214",
+      "userId": "user_demo_1",
+      "amount": -7500,
+      "type": "BOOKING",
+      "description": "Ticket Pass (1) - Super Eagles vs Ghana (Covered)",
+      "reference": "TKT-MAN-90214",
+      "date": "2026-09-28T10:14:00.000Z"
+    },
+    {
+      "id": "TXN-TOP-849102",
+      "userId": "user_demo_1",
+      "amount": 25000,
+      "type": "TOPUP",
+      "description": "Wallet Top-up via Instant Card Transfer",
+      "reference": "REF-PAY-9812401",
+      "date": "2026-09-28T09:30:00.000Z"
     }
   ],
   "turnstileLogs": [
     {
       "id": "LOG-TURN-9415",
       "ticketId": "TKT-MAN-60327",
-      "eventId": "ev_2",
+      "holderName": "Chukwudi Adeleke",
       "eventTitle": "Abuja Live Music & Cultural Festival 2026",
       "gate": "Gate 1 (Popular Entrance)",
-      "turnstileId": "OPTICAL-TURNSTILE-01",
-      "holderName": "Chukwudi Adeleke",
       "scanResult": "GRANTED",
-      "timestamp": "2026-10-01T22:34:39.592Z",
-      "reason": "Valid ticket verified - Turnstile barrier unlocked"
+      "reason": "Valid ticket verified - Turnstile barrier unlocked",
+      "timestamp": "2026-10-01T22:34:39.592Z"
     },
     {
       "id": "LOG-TURN-7104",
       "ticketId": "TKT-MAN-97339",
-      "eventId": "ev_1",
+      "holderName": "Chukwudi Adeleke",
       "eventTitle": "Nigeria Super Eagles vs Ghana Black Stars",
       "gate": "Gate 3 (West Tribune)",
-      "turnstileId": "TURNSTILE-G3-01",
-      "holderName": "Chukwudi Adeleke",
       "scanResult": "ALREADY_USED",
-      "timestamp": "2026-10-01T22:28:15.972Z",
-      "reason": "Already scanned at Gate 3 (West Tribune) on 11:28:15 PM"
+      "reason": "Already scanned at Gate 3 (West Tribune) on 11:28:15 PM",
+      "timestamp": "2026-10-01T22:28:15.972Z"
     },
     {
       "id": "LOG-TURN-7885",
       "ticketId": "TKT-MAN-97339",
-      "eventId": "ev_1",
+      "holderName": "Chukwudi Adeleke",
       "eventTitle": "Nigeria Super Eagles vs Ghana Black Stars",
       "gate": "Gate 3 (West Tribune)",
-      "turnstileId": "TURNSTILE-G3-01",
-      "holderName": "Chukwudi Adeleke",
       "scanResult": "GRANTED",
-      "timestamp": "2026-10-01T22:28:15.955Z",
-      "reason": "Valid ticket verified - Turnstile barrier unlocked"
-    },
-    {
-      "id": "LOG-TURN-1001",
-      "ticketId": "TKT-MAN-88412",
-      "eventId": "ev_1",
-      "eventTitle": "Nigeria Super Eagles vs Ghana Black Stars",
-      "gate": "Gate 1 (Popular Entrance)",
-      "turnstileId": "TURNSTILE-G1-02",
-      "holderName": "Emeka Eze",
-      "scanResult": "GRANTED",
-      "timestamp": "2026-10-01T16:20:11.000Z",
-      "reason": "Valid ticket verified - Turnstile barrier unlocked"
+      "reason": "Valid ticket verified - Turnstile barrier unlocked",
+      "timestamp": "2026-10-01T22:28:15.955Z"
     },
     {
       "id": "LOG-TURN-1002",
       "ticketId": "TKT-MAN-77219",
-      "eventId": "ev_1",
+      "holderName": "Zainab Mohammed",
       "eventTitle": "Nigeria Super Eagles vs Ghana Black Stars",
       "gate": "Gate 3 (West Tribune)",
-      "turnstileId": "TURNSTILE-G3-01",
-      "holderName": "Zainab Mohammed",
       "scanResult": "GRANTED",
-      "timestamp": "2026-10-01T16:35:42.000Z",
-      "reason": "Valid VIP Grandstand pass verified"
+      "reason": "Valid VIP Grandstand pass verified",
+      "timestamp": "2026-10-01T16:35:42.000Z"
+    },
+    {
+      "id": "LOG-TURN-1001",
+      "ticketId": "TKT-MAN-88412",
+      "holderName": "Emeka Eze",
+      "eventTitle": "Nigeria Super Eagles vs Ghana Black Stars",
+      "gate": "Gate 1 (Popular Entrance)",
+      "scanResult": "GRANTED",
+      "reason": "Valid ticket verified - Turnstile barrier unlocked",
+      "timestamp": "2026-10-01T16:20:11.000Z"
     }
   ],
   "announcements": [
     {
-      "id": "ANN-01",
-      "title": "Gates Open Early for Super Eagles vs Ghana Clash",
-      "content": "Turnstile gates 1 through 6 will open at 14:00 WAT (3 hours prior to kickoff). Please have your digital QR pass ready on your phone screen.",
-      "type": "URGENT",
-      "date": "2026-10-01T12:00:00.000Z",
-      "active": true
-    },
-    {
       "id": "ANN-02",
       "title": "Abuja Stadium Express Shuttle Service",
       "content": "Complimentary match day buses depart Area 1 & Eagle Square every 15 minutes starting from 13:00 WAT.",
-      "type": "INFO",
-      "date": "2026-09-29T10:00:00.000Z",
-      "active": true
+      "priority": "NORMAL",
+      "createdAt": "2026-10-06T23:15:25.977Z"
+    },
+    {
+      "id": "ANN-01",
+      "title": "Gates Open Early for Super Eagles vs Ghana Clash",
+      "content": "Turnstile gates 1 through 6 will open at 14:00 WAT (3 hours prior to kickoff). Please have your digital QR pass ready on your phone screen.",
+      "priority": "NORMAL",
+      "createdAt": "2026-10-06T23:15:25.972Z"
     }
   ],
-  "sessions": [
-    {
-      "token": "41e2fe9769555c769424f4a78c19c169f72433745bdaf1a70092b20dfe2e36fc",
-      "userId": "user_demo_1",
-      "createdAt": "2026-10-01T22:28:15.855Z",
-      "expiresAt": "2026-10-15T22:28:15.830Z"
-    },
-    {
-      "token": "a2489db1513113a6bf3252b336722628000d902ac05ea4bc4ce124ed6e9c51c4",
-      "userId": "user_admin_01",
-      "createdAt": "2026-10-01T22:28:16.293Z",
-      "expiresAt": "2026-10-15T22:28:16.293Z"
-    },
-    {
-      "token": "0e89abf6c4672e64076cd2518ce385a5611fb5f22c063d04ab4187c79902c754",
-      "userId": "user_admin_01",
-      "createdAt": "2026-10-02T00:55:36.275Z",
-      "expiresAt": "2026-10-16T00:55:36.275Z"
-    },
-    {
-      "token": "2b9add3efacbebfc301e158f507c58719caf315684cb57f735e14d85fd5d92c4",
-      "userId": "user_admin_01",
-      "createdAt": "2026-10-06T21:51:04.243Z",
-      "expiresAt": "2026-10-20T21:51:04.243Z"
-    }
-  ]
+  "sessions": []
 }

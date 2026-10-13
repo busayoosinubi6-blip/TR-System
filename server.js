@@ -23,7 +23,7 @@ function readDb() {
 }
 
 function writeDb(data) {
-    saveFullDb(data);
+    return saveFullDb(data);
 }
 
 function hashPassword(password) {
@@ -103,7 +103,7 @@ function stewardMiddleware(req, res, next) {
 // ==========================================
 
 // Register
-app.post('/api/auth/register', (req, res) => {
+app.post('/api/auth/register', async (req, res) => {
     try {
         const { name, email, phone, password } = req.body;
 
@@ -149,9 +149,9 @@ app.post('/api/auth/register', (req, res) => {
 
         db.users.push(newUser);
         db.transactions.unshift(welcomeTxn);
-        writeDb(db);
-
         const token = createSession(newUser.id);
+        await writeDb(db);
+
         res.cookie('man_token', token, { httpOnly: false, maxAge: 14 * 24 * 60 * 60 * 1000 });
 
         const { passwordHash, ...safeUser } = newUser;
@@ -168,7 +168,7 @@ app.post('/api/auth/register', (req, res) => {
 });
 
 // Login
-app.post('/api/auth/login', (req, res) => {
+app.post('/api/auth/login', async (req, res) => {
     try {
         const { email, password } = req.body;
 
@@ -190,6 +190,7 @@ app.post('/api/auth/login', (req, res) => {
         }
 
         const token = createSession(user.id);
+        await writeDb(db);
         res.cookie('man_token', token, { httpOnly: false, maxAge: 14 * 24 * 60 * 60 * 1000 });
 
         const { passwordHash, ...safeUser } = user;
@@ -244,7 +245,7 @@ app.get('/api/auth/me', authMiddleware, (req, res) => {
 });
 
 // Update Profile
-app.patch('/api/auth/profile', authMiddleware, (req, res) => {
+app.patch('/api/auth/profile', authMiddleware, async (req, res) => {
     try {
         const { name, phone, favoriteGate } = req.body;
         const db = readDb();
@@ -258,7 +259,7 @@ app.patch('/api/auth/profile', authMiddleware, (req, res) => {
         if (phone && phone.trim()) db.users[userIndex].phone = phone.trim();
         if (favoriteGate && favoriteGate.trim()) db.users[userIndex].favoriteGate = favoriteGate.trim();
 
-        writeDb(db);
+        await writeDb(db);
 
         const { passwordHash, ...safeUser } = db.users[userIndex];
         return res.json({
@@ -272,7 +273,7 @@ app.patch('/api/auth/profile', authMiddleware, (req, res) => {
 });
 
 // Change Password
-app.post('/api/auth/change-password', authMiddleware, (req, res) => {
+app.post('/api/auth/change-password', authMiddleware, async (req, res) => {
     try {
         const { currentPassword, newPassword } = req.body;
         if (!currentPassword || !newPassword) {
@@ -291,7 +292,7 @@ app.post('/api/auth/change-password', authMiddleware, (req, res) => {
         }
 
         db.users[userIndex].passwordHash = hashPassword(newPassword);
-        writeDb(db);
+        await writeDb(db);
 
         return res.json({ success: true, message: 'Password updated successfully!' });
     } catch (err) {
@@ -304,7 +305,7 @@ app.post('/api/auth/change-password', authMiddleware, (req, res) => {
 // ==========================================
 
 // Top-up wallet
-app.post('/api/user/topup', authMiddleware, (req, res) => {
+app.post('/api/user/topup', authMiddleware, async (req, res) => {
     const amount = parseInt(req.body.amount, 10);
     if (!amount || amount < 500) {
         return res.status(400).json({ success: false, message: 'Minimum top up amount is ₦500.' });
@@ -329,7 +330,7 @@ app.post('/api/user/topup', authMiddleware, (req, res) => {
     };
 
     db.transactions.unshift(newTxn);
-    writeDb(db);
+    await writeDb(db);
 
     return res.json({
         success: true,
@@ -446,7 +447,7 @@ app.get('/api/tickets/:id', authMiddleware, (req, res) => {
 });
 
 // Book match day tickets
-app.post('/api/tickets/book', authMiddleware, (req, res) => {
+app.post('/api/tickets/book', authMiddleware, async (req, res) => {
     try {
         const { eventId, category = 'regular', quantity = 1 } = req.body;
         const db = readDb();
@@ -546,7 +547,7 @@ app.post('/api/tickets/book', authMiddleware, (req, res) => {
             status: 'SUCCESS'
         });
 
-        writeDb(db);
+        await writeDb(db);
 
         return res.status(201).json({
             success: true,
@@ -561,7 +562,7 @@ app.post('/api/tickets/book', authMiddleware, (req, res) => {
 });
 
 // Cancel a ticket reservation (with refund)
-app.post('/api/tickets/:id/cancel', authMiddleware, (req, res) => {
+app.post('/api/tickets/:id/cancel', authMiddleware, async (req, res) => {
     try {
         const ticketId = req.params.id;
         const db = readDb();
@@ -604,7 +605,7 @@ app.post('/api/tickets/:id/cancel', authMiddleware, (req, res) => {
             status: 'SUCCESS'
         });
 
-        writeDb(db);
+        await writeDb(db);
 
         const currentActiveBalance = userIndex !== -1 ? db.users[userIndex].walletBalance : req.user.walletBalance;
 
@@ -619,7 +620,7 @@ app.post('/api/tickets/:id/cancel', authMiddleware, (req, res) => {
 });
 
 // Transfer Ticket to another Fan
-app.post('/api/tickets/:id/transfer', authMiddleware, (req, res) => {
+app.post('/api/tickets/:id/transfer', authMiddleware, async (req, res) => {
     try {
         const ticketId = req.params.id;
         const { recipientEmailOrPhone } = req.body;
@@ -664,7 +665,7 @@ app.post('/api/tickets/:id/transfer', authMiddleware, (req, res) => {
         ticket.transferredAt = new Date().toISOString();
         ticket.qrCodeData = `MAN-STADIUM-PASS:${ticket.id}:${recipient.id}:${ticket.eventId}:${ticket.seat.replace(/\s+/g, '')}`;
 
-        writeDb(db);
+        await writeDb(db);
 
         return res.json({
             success: true,

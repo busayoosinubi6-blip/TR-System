@@ -20,7 +20,10 @@ try {
         const isRemote = !connectionString.includes('localhost') && !connectionString.includes('127.0.0.1');
         pool = new Pool({
             connectionString,
-            ssl: isRemote ? { rejectUnauthorized: false } : false
+            ssl: isRemote ? { rejectUnauthorized: false } : false,
+            max: 10,
+            idleTimeoutMillis: 30000,
+            connectionTimeoutMillis: 10000
         });
     } else {
         pool = new Pool({
@@ -28,7 +31,10 @@ try {
             port: parseInt(process.env.PGPORT || '5432', 10),
             database: process.env.PGDATABASE || 'man_stadium_tms',
             user: process.env.PGUSER || 'postgres',
-            password: process.env.PGPASSWORD || 'postgres'
+            password: process.env.PGPASSWORD || 'postgres',
+            max: 10,
+            idleTimeoutMillis: 30000,
+            connectionTimeoutMillis: 10000
         });
     }
 } catch (err) {
@@ -252,6 +258,11 @@ async function initPostgres() {
 
             isPostgresConnected = true;
             console.log('🐘 PostgreSQL Database Connected & Initialized!');
+            try {
+                await getFullDb();
+            } catch (syncErr) {
+                console.warn('Initial PostgreSQL cache sync notice:', syncErr.message);
+            }
             return true;
         } finally {
             client.release();
@@ -388,6 +399,7 @@ async function saveFullDb(data) {
                 ON CONFLICT (id) DO UPDATE SET
                     name = EXCLUDED.name,
                     phone = EXCLUDED.phone,
+                    password_hash = EXCLUDED.password_hash,
                     role = EXCLUDED.role,
                     wallet_balance = EXCLUDED.wallet_balance,
                     favorite_gate = EXCLUDED.favorite_gate,
