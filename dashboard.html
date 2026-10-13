@@ -162,8 +162,18 @@
                         Moshood Abiola Stadium Season 2026
                     </div>
                     <h1 class="mt-2 text-2xl sm:text-3xl font-black tracking-tight">
-                        Welcome, <span id="user-name-banner">Member</span>!
+                        Welcome, <span id="user-name-banner">...</span>!
                     </h1>
+                    <script>
+                        (function() {
+                            try {
+                                const u = JSON.parse(localStorage.getItem('man_user') || '{}');
+                                if (u && u.name) {
+                                    document.getElementById('user-name-banner').textContent = u.name;
+                                }
+                            } catch(e) {}
+                        })();
+                    </script>
                     <p id="welcome-banner-desc" class="mt-1 text-xs sm:text-sm text-white/80 max-w-xl">
                         Manage your digital match day passes, view wallet transactions, and reserve stadium seats.
                     </p>
@@ -182,6 +192,29 @@
                 </div>
             </div>
 
+            <!-- Empty Wallet Balance Alert Notification -->
+            <div id="empty-balance-banner" class="hidden mt-4 rounded-xl border border-amber-300 bg-amber-500/20 backdrop-blur-md p-4 text-white shadow-lg animate-in fade-in">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange text-maroon font-black text-lg shadow-md shadow-orange/30">
+                            💳
+                        </div>
+                        <div>
+                            <div class="text-xs font-black uppercase tracking-wider text-amber-300 flex items-center gap-2">
+                                <span>Empty Wallet Balance: ₦0.00</span>
+                                <span class="rounded bg-orange px-2 py-0.5 text-[9px] font-extrabold text-maroon">Top Up Needed</span>
+                            </div>
+                            <div class="text-xs text-white/90 mt-0.5 max-w-xl">
+                                Your stadium ticketing wallet is empty. Top up your balance to book match day passes and reserve stadium seats.
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="switchTab('wallet')" class="shrink-0 rounded-xl bg-orange hover:bg-amber-400 px-4 py-2 text-xs font-black uppercase tracking-wider text-maroon shadow-md transition active:scale-95">
+                        ⚡ Top Up Balance Now
+                    </button>
+                </div>
+            </div>
+
             <!-- Stats Bar -->
             <div class="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3 border-t border-white/10 pt-4 text-xs">
                 <div class="rounded-lg bg-white/5 p-2.5">
@@ -191,6 +224,9 @@
                 <div class="rounded-lg bg-white/5 p-2.5">
                     <div id="stat-2-label" class="text-[10px] uppercase font-bold text-white/60">Wallet Balance</div>
                     <div id="stat-2-val" class="mt-0.5 text-lg font-black text-white">₦<span id="stat-wallet">0</span></div>
+                    <div id="stat-wallet-empty-badge" class="hidden mt-1 inline-flex items-center gap-1 rounded bg-amber-500/30 border border-amber-400/50 px-1.5 py-0.5 text-[9px] font-extrabold text-amber-300 uppercase tracking-wider">
+                        ⚠️ Empty - Top Up
+                    </div>
                 </div>
                 <div class="rounded-lg bg-white/5 p-2.5">
                     <div id="stat-3-label" class="text-[10px] uppercase font-bold text-white/60">Preferred Gate</div>
@@ -270,6 +306,31 @@
         <!-- TAB 3: WALLET & FINANCIAL LEDGER -->
         <!-- ============================================== -->
         <section id="tab-wallet-content" class="mt-6 hidden">
+            <!-- Empty Wallet Prompt Notice -->
+            <div id="wallet-empty-prompt" class="hidden mb-6 rounded-2xl border-2 border-dashed border-amber-300 bg-amber-50 p-4 sm:p-5 text-amber-900 shadow-sm animate-in fade-in">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div class="flex items-center gap-3.5">
+                        <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-200 text-amber-800 text-2xl font-black">
+                            ⚠️
+                        </div>
+                        <div>
+                            <div class="text-xs font-black uppercase tracking-wider text-amber-900 flex items-center gap-2">
+                                <span>Your Wallet Balance is Empty (₦0.00)</span>
+                                <span class="rounded bg-amber-200 px-2 py-0.5 text-[9px] font-bold text-amber-900">Top Up Required</span>
+                            </div>
+                            <div class="text-xs text-amber-800 mt-1">
+                                Please select a top-up amount below or enter a custom sum to fund your account and reserve match day passes.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button onclick="topupWallet(5000)" class="rounded-xl bg-orange hover:bg-amber-400 px-4 py-2 text-xs font-black uppercase tracking-wider text-maroon shadow-sm transition active:scale-95">
+                            + ₦5,000 Quick Top Up
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                 <!-- Balance & Topup card -->
                 <div class="rounded-2xl bg-gradient-to-tr from-maroon to-maroonDark p-6 text-white shadow-md">
@@ -822,6 +883,19 @@
         let currentBookingEvent = null;
         let bookingQuantity = 1;
 
+        // Unified authenticated fetch with fallback Authorization Header & Cookies
+        function authFetch(url, options = {}) {
+            const token = localStorage.getItem('man_token') || '';
+            const headers = Object.assign({}, options.headers || {});
+            if (token) {
+                headers['Authorization'] = 'Bearer ' + token;
+            }
+            return fetch(url, Object.assign({}, options, {
+                headers: headers,
+                credentials: 'include'
+            }));
+        }
+
         // Initialize Dashboard
         window.addEventListener('DOMContentLoaded', async () => {
             await checkAuthAndLoad();
@@ -830,15 +904,32 @@
         });
 
         async function checkAuthAndLoad() {
+            // Immediate pre-population from localStorage cache to prevent flicker
             try {
-                const res = await fetch('/api/auth/me', { credentials: 'include' });
+                const cached = localStorage.getItem('man_user');
+                if (cached) {
+                    const u = JSON.parse(cached);
+                    if (u && u.name) {
+                        currentUser = u;
+                        renderUserProfile(u, {});
+                    }
+                }
+            } catch (e) {}
+
+            try {
+                const res = await authFetch('/api/auth/me');
                 if (!res.ok) {
-                    window.location.href = 'login.html';
-                    return;
+                    if (res.status === 401) {
+                        localStorage.removeItem('man_token');
+                        localStorage.removeItem('man_user');
+                        window.location.href = 'login.html';
+                        return;
+                    }
                 }
                 const data = await res.json();
                 if (data.success && data.user) {
                     currentUser = data.user;
+                    localStorage.setItem('man_user', JSON.stringify(data.user));
                     renderUserProfile(data.user, data.stats);
                     
                     const isSteward = data.user.role === 'steward';
@@ -920,13 +1011,15 @@
                 }
             } catch (err) {
                 console.error('Auth verification error:', err);
-                window.location.href = 'login.html';
+                if (!currentUser) {
+                    window.location.href = 'login.html';
+                }
             }
         }
 
         function renderUserProfile(user, stats) {
             document.getElementById('user-name-header').textContent = user.name;
-            document.getElementById('user-name-banner').textContent = user.name.split(' ')[0] || user.name;
+            document.getElementById('user-name-banner').textContent = user.name;
             document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
             
             const isSteward = user.role === 'steward';
@@ -959,12 +1052,32 @@
                 if (profileCardTitle) profileCardTitle.textContent = user.role === 'admin' ? 'Administrator Profile' : 'Edit Fan Profile';
                 if (profileGateLabel) profileGateLabel.textContent = 'Preferred Stadium Gate';
 
-                document.getElementById('user-wallet-header').textContent = (user.walletBalance || 0).toLocaleString();
-                document.getElementById('stat-wallet').textContent = (user.walletBalance || 0).toLocaleString();
-                document.getElementById('wallet-card-balance').textContent = (user.walletBalance || 0).toLocaleString();
-                document.getElementById('wallet-tab-balance').textContent = (user.walletBalance || 0).toLocaleString();
+                const balanceNum = parseFloat(user.walletBalance || 0);
+                document.getElementById('user-wallet-header').textContent = balanceNum.toLocaleString();
+                document.getElementById('stat-wallet').textContent = balanceNum.toLocaleString();
+                document.getElementById('wallet-card-balance').textContent = balanceNum.toLocaleString();
+                document.getElementById('wallet-tab-balance').textContent = balanceNum.toLocaleString();
                 document.getElementById('stat-gate').textContent = user.favoriteGate || 'Gate 2 (General)';
                 document.getElementById('stat-id').textContent = user.role.toUpperCase();
+
+                // Empty Balance Indicators
+                const isZeroBalance = balanceNum <= 0;
+                const emptyBanner = document.getElementById('empty-balance-banner');
+                const statEmptyBadge = document.getElementById('stat-wallet-empty-badge');
+                const walletEmptyPrompt = document.getElementById('wallet-empty-prompt');
+
+                if (emptyBanner) {
+                    if (isZeroBalance) emptyBanner.classList.remove('hidden');
+                    else emptyBanner.classList.add('hidden');
+                }
+                if (statEmptyBadge) {
+                    if (isZeroBalance) statEmptyBadge.classList.remove('hidden');
+                    else statEmptyBadge.classList.add('hidden');
+                }
+                if (walletEmptyPrompt) {
+                    if (isZeroBalance) walletEmptyPrompt.classList.remove('hidden');
+                    else walletEmptyPrompt.classList.add('hidden');
+                }
             }
 
             // Role label
@@ -1004,7 +1117,7 @@
         // Fetch My Passes
         async function fetchMyTickets() {
             try {
-                const res = await fetch('/api/tickets/my-tickets', { credentials: 'include' });
+                const res = await authFetch('/api/tickets/my-tickets');
                 const data = await res.json();
                 if (data.success) {
                     myTicketsList = data.tickets || [];
@@ -1155,7 +1268,7 @@
         // Fetch User Financial Transactions
         async function fetchTransactions() {
             try {
-                const res = await fetch('/api/user/transactions', { credentials: 'include' });
+                const res = await authFetch('/api/user/transactions');
                 const data = await res.json();
                 if (data.success) {
                     renderTransactions(data.transactions || []);
@@ -1201,7 +1314,7 @@
             }
 
             try {
-                const res = await fetch('/api/turnstile/verify', {
+                const res = await authFetch('/api/turnstile/verify', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ passCode: code, gate: gate, turnstileId: 'OPTICAL-TURNSTILE-01' })
@@ -1249,7 +1362,7 @@
         // Fetch Turnstile Logs
         async function fetchTurnstileLogs() {
             try {
-                const res = await fetch('/api/turnstile/logs');
+                const res = await authFetch('/api/turnstile/logs');
                 const data = await res.json();
                 if (data.success) {
                     const tbody = document.getElementById('turnstile-logs-body');
@@ -1281,7 +1394,7 @@
         // Fetch Gates Throughput
         async function fetchGatesThroughput() {
             try {
-                const res = await fetch('/api/turnstile/gates');
+                const res = await authFetch('/api/turnstile/gates');
                 const data = await res.json();
                 if (data.success && data.gates) {
                     const grid = document.getElementById('gates-throughput-grid');
@@ -1340,10 +1453,9 @@
             const recipientEmailOrPhone = document.getElementById('transfer-recipient-input').value.trim();
 
             try {
-                const res = await fetch(`/api/tickets/${ticketId}/transfer`, {
+                const res = await authFetch(`/api/tickets/${ticketId}/transfer`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
                     body: JSON.stringify({ recipientEmailOrPhone })
                 });
 
@@ -1417,10 +1529,9 @@
             const category = document.getElementById('book-tier-select').value;
 
             try {
-                const res = await fetch('/api/tickets/book', {
+                const res = await authFetch('/api/tickets/book', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
                     body: JSON.stringify({ eventId, category, quantity: bookingQuantity })
                 });
 
@@ -1445,9 +1556,8 @@
             if (!confirm('Are you sure you want to cancel this ticket pass? The full cost will be refunded to your wallet.')) return;
 
             try {
-                const res = await fetch(`/api/tickets/${ticketId}/cancel`, {
-                    method: 'POST',
-                    credentials: 'include'
+                const res = await authFetch(`/api/tickets/${ticketId}/cancel`, {
+                    method: 'POST'
                 });
                 const data = await res.json();
                 if (data.success) {
@@ -1471,16 +1581,16 @@
             const favoriteGate = document.getElementById('profile-gate').value;
 
             try {
-                const res = await fetch('/api/auth/profile', {
+                const res = await authFetch('/api/auth/profile', {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
                     body: JSON.stringify({ name, phone, favoriteGate })
                 });
                 const data = await res.json();
                 if (data.success) {
                     alert('Profile updated successfully!');
                     currentUser = data.user;
+                    localStorage.setItem('man_user', JSON.stringify(data.user));
                     renderUserProfile(currentUser, {});
                 } else {
                     alert('Could not update profile.');
@@ -1493,16 +1603,16 @@
         // Top up Wallet
         async function topupWallet(amount) {
             try {
-                const res = await fetch('/api/user/topup', {
+                const res = await authFetch('/api/user/topup', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
                     body: JSON.stringify({ amount })
                 });
                 const data = await res.json();
                 if (data.success) {
                     alert(data.message);
                     currentUser.walletBalance = data.newBalance;
+                    localStorage.setItem('man_user', JSON.stringify(currentUser));
                     renderUserProfile(currentUser, {});
                     await fetchTransactions();
                 } else {
@@ -1523,7 +1633,7 @@
         // Fetch Admin Data
         async function fetchAdminData() {
             try {
-                const overviewRes = await fetch('/api/admin/overview', { credentials: 'include' });
+                const overviewRes = await authFetch('/api/admin/overview');
                 const overview = await overviewRes.json();
                 if (overview.success) {
                     document.getElementById('admin-stat-total-tkt').textContent = overview.stats.totalTicketsIssued;
@@ -1532,7 +1642,7 @@
                     document.getElementById('admin-stat-fans').textContent = overview.stats.totalUsers;
                 }
 
-                const ticketsRes = await fetch('/api/admin/tickets', { credentials: 'include' });
+                const ticketsRes = await authFetch('/api/admin/tickets');
                 const ticketsData = await ticketsRes.json();
                 if (ticketsData.success) {
                     const tbody = document.getElementById('admin-tickets-table-body');
@@ -1576,10 +1686,9 @@
             const capacity = document.getElementById('new-event-capacity').value;
 
             try {
-                const res = await fetch('/api/admin/events', {
+                const res = await authFetch('/api/admin/events', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
                     body: JSON.stringify({
                         title, date, time,
                         prices: { regular, covered, vip },
@@ -1643,8 +1752,10 @@
         // Handle Logout
         async function handleLogout() {
             try {
-                await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+                await authFetch('/api/auth/logout', { method: 'POST' });
             } catch (e) {}
+            localStorage.removeItem('man_token');
+            localStorage.removeItem('man_user');
             window.location.href = 'login.html';
         }
     </script>

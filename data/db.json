@@ -67,7 +67,7 @@
       "phone": "+2348011223344",
       "passwordHash": "dda69783f28fdf6f1c5a83e8400f2472e9300887d1dffffe12a07b92a3d0aa25",
       "role": "member",
-      "walletBalance": 15000,
+      "walletBalance": 0,
       "favoriteGate": "Gate 2 (General Entrance)",
       "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
       "createdAt": "2026-10-13T07:23:03.468Z"
@@ -281,16 +281,6 @@
   ],
   "transactions": [
     {
-      "id": "TXN-TOP-474890",
-      "userId": "user_1791876183466_8atwc",
-      "type": "TOPUP",
-      "amount": 15000,
-      "description": "New Stadium Member Welcome Credit Bonus",
-      "reference": "WELCOME-BONUS-2026",
-      "date": "2026-10-13T07:23:03.468Z",
-      "status": "SUCCESS"
-    },
-    {
       "id": "TXN-TOP-654686",
       "userId": "user_steward_01",
       "amount": 2000,
@@ -379,15 +369,6 @@
       "description": "Match Pass (1) - Nigeria Super Eagles vs Ghana Black Stars [Popular Terrace]",
       "reference": "TKT-MAN-68103",
       "date": "2026-10-02T00:35:51.249Z"
-    },
-    {
-      "id": "TXN-TOP-944613",
-      "userId": "user_1790901310720_us3bj",
-      "amount": 15000,
-      "type": "TOPUP",
-      "description": "New Stadium Member Welcome Credit Bonus",
-      "reference": "WELCOME-BONUS-2026",
-      "date": "2026-10-02T00:35:10.725Z"
     },
     {
       "id": "TXN-REF-140808",
@@ -512,5 +493,18 @@
       "createdAt": "2026-10-06T23:15:25.972Z"
     }
   ],
-  "sessions": []
+  "sessions": [
+    {
+      "token": "50624aa9f6c73389306552f20699bc7f45672150d0572a6794d8e856b46798d8",
+      "userId": "user_1791881099233_4b6up",
+      "createdAt": "2026-10-13T08:44:59.276Z",
+      "expiresAt": "2026-10-27T08:44:59.276Z"
+    },
+    {
+      "token": "5888750231b5e25dc919ecf704aee4120a1a25e2dbf5435480ba184e2fd8c36d",
+      "userId": "user_1791881227349_6md63",
+      "createdAt": "2026-10-13T08:47:07.372Z",
+      "expiresAt": "2026-10-27T08:47:07.371Z"
+    }
+  ]
 }

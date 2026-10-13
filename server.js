@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser('man_stadium_secure_secret_key_2026'));
 
-const { initPostgres, getFullDb, saveFullDb, readJsonDb, writeJsonDb, isPostgresConnected } = require('./db');
+const { initPostgres, getFullDb, saveFullDb, readJsonDb, writeJsonDb, isPostgresConnected, pool } = require('./db');
 
 // Helper for database with PostgreSQL synchronization
 function readDb() {
@@ -30,56 +30,119 @@ function hashPassword(password) {
     return crypto.createHash('sha256').update(password).digest('hex');
 }
 
+function setAuthCookie(res, token) {
+    res.cookie('man_token', token, {
+        path: '/',
+        httpOnly: false,
+        sameSite: 'lax',
+        maxAge: 14 * 24 * 60 * 60 * 1000
+    });
+}
+
 // Session Management with Persistence
-function createSession(userId) {
+function createSession(userId, currentDb) {
     const token = crypto.randomBytes(32).toString('hex');
-    const db = readDb();
+    const db = currentDb || readDb();
     const expiresAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(); // 14 days
     
-    // Purge expired sessions
+    if (!db.sessions) db.sessions = [];
     db.sessions = db.sessions.filter(s => new Date(s.expiresAt) > new Date());
     db.sessions.push({ token, userId, createdAt: new Date().toISOString(), expiresAt });
-    writeDb(db);
+    
+    if (!currentDb) {
+        writeDb(db);
+    }
+
     return token;
 }
 
 function invalidateSession(token) {
     const db = readDb();
-    db.sessions = db.sessions.filter(s => s.token !== token);
-    writeDb(db);
+    if (db.sessions) {
+        db.sessions = db.sessions.filter(s => s.token !== token);
+        writeDb(db);
+    }
+    if (pool) {
+        pool.query('DELETE FROM sessions WHERE token = $1', [token]).catch(() => {});
+    }
 }
 
-function getUserByToken(token) {
+async function getUserByToken(token) {
     if (!token) return null;
     const db = readDb();
-    const session = db.sessions.find(s => s.token === token && new Date(s.expiresAt) > new Date());
-    if (!session) return null;
-    return db.users.find(u => u.id === session.userId) || null;
+    const session = (db.sessions || []).find(s => s.token === token && new Date(s.expiresAt) > new Date());
+    if (session) {
+        const u = (db.users || []).find(user => user.id === session.userId);
+        if (u) return u;
+    }
+
+    // Direct PostgreSQL lookup fallback
+    if (pool) {
+        try {
+            const sRes = await pool.query('SELECT user_id, expires_at FROM sessions WHERE token = $1', [token]);
+            if (sRes.rows.length > 0 && new Date(sRes.rows[0].expires_at) > new Date()) {
+                const uRes = await pool.query('SELECT * FROM users WHERE id = $1', [sRes.rows[0].user_id]);
+                if (uRes.rows.length > 0) {
+                    const row = uRes.rows[0];
+                    const pgUser = {
+                        id: row.id,
+                        name: row.name,
+                        email: row.email,
+                        phone: row.phone,
+                        passwordHash: row.password_hash,
+                        role: row.role,
+                        walletBalance: parseFloat(row.wallet_balance || 0),
+                        favoriteGate: row.favorite_gate,
+                        avatar: row.avatar,
+                        createdAt: row.created_at
+                    };
+                    if (!db.sessions.some(s => s.token === token)) {
+                        db.sessions.push({ token, userId: row.id, expiresAt: sRes.rows[0].expires_at });
+                    }
+                    const existingIdx = db.users.findIndex(u => u.id === row.id);
+                    if (existingIdx >= 0) {
+                        db.users[existingIdx] = pgUser;
+                    } else {
+                        db.users.push(pgUser);
+                    }
+                    return pgUser;
+                }
+            }
+        } catch (err) {
+            console.error('PostgreSQL session lookup error:', err.message);
+        }
+    }
+    return null;
 }
 
 // Authentication Middleware
-function authMiddleware(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    let token = null;
+async function authMiddleware(req, res, next) {
+    try {
+        const authHeader = req.headers['authorization'];
+        let token = null;
 
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-        token = authHeader.substring(7);
-    } else if (req.cookies && req.cookies.man_token) {
-        token = req.cookies.man_token;
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+            token = authHeader.substring(7);
+        } else if (req.cookies && req.cookies.man_token) {
+            token = req.cookies.man_token;
+        }
+
+        if (!token) {
+            return res.status(401).json({ success: false, message: 'Authentication required. Please sign in.' });
+        }
+
+        const user = await getUserByToken(token);
+        if (!user) {
+            return res.status(401).json({ success: false, message: 'Session expired or invalid. Please sign in again.' });
+        }
+
+        req.user = user;
+        req.token = token;
+        next();
+    } catch (err) {
+        console.error('Auth middleware error:', err);
+        return res.status(500).json({ success: false, message: 'Authentication error.' });
     }
-
-    if (!token) {
-        return res.status(401).json({ success: false, message: 'Authentication required. Please sign in.' });
-    }
-
-    const user = getUserByToken(token);
-    if (!user) {
-        return res.status(401).json({ success: false, message: 'Session expired or invalid. Please sign in again.' });
-    }
-
-    req.user = user;
-    req.token = token;
-    next();
 }
 
 // Admin Role Middleware
@@ -119,7 +182,6 @@ app.post('/api/auth/register', async (req, res) => {
             return res.status(400).json({ success: false, message: 'An account with this email already exists. Please sign in.' });
         }
 
-        const initialBalance = 15000;
         const newUserId = 'user_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
 
         const newUser = {
@@ -129,35 +191,22 @@ app.post('/api/auth/register', async (req, res) => {
             phone: phone ? phone.trim() : '+234 800 000 0000',
             passwordHash: hashPassword(password),
             role: 'member',
-            walletBalance: initialBalance,
+            walletBalance: 0,
             favoriteGate: 'Gate 2 (General Entrance)',
             avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
             createdAt: new Date().toISOString()
         };
 
-        // Welcome bonus transaction
-        const welcomeTxn = {
-            id: 'TXN-TOP-' + Math.floor(100000 + Math.random() * 900000),
-            userId: newUserId,
-            type: 'TOPUP',
-            amount: initialBalance,
-            description: 'New Stadium Member Welcome Credit Bonus',
-            reference: 'WELCOME-BONUS-2026',
-            date: new Date().toISOString(),
-            status: 'SUCCESS'
-        };
-
         db.users.push(newUser);
-        db.transactions.unshift(welcomeTxn);
-        const token = createSession(newUser.id);
+        const token = createSession(newUser.id, db);
         await writeDb(db);
 
-        res.cookie('man_token', token, { httpOnly: false, maxAge: 14 * 24 * 60 * 60 * 1000 });
+        setAuthCookie(res, token);
 
         const { passwordHash, ...safeUser } = newUser;
         return res.status(201).json({
             success: true,
-            message: 'Registration successful! Welcome to MAN Stadium Ticketing.',
+            message: `Account created successfully! Welcome, ${newUser.name}!`,
             token,
             user: safeUser
         });
@@ -180,18 +229,45 @@ app.post('/api/auth/login', async (req, res) => {
         const hash = hashPassword(password);
         const db = readDb();
 
-        const user = db.users.find(u => 
+        let user = db.users.find(u => 
             (u.email.toLowerCase() === cleanEmail || (u.phone && u.phone.trim() === cleanEmail)) && 
             u.passwordHash === hash
         );
+
+        if (!user && pool) {
+            try {
+                const uRes = await pool.query(
+                    'SELECT * FROM users WHERE (LOWER(email) = $1 OR phone = $1) AND password_hash = $2',
+                    [cleanEmail, hash]
+                );
+                if (uRes.rows.length > 0) {
+                    const row = uRes.rows[0];
+                    user = {
+                        id: row.id,
+                        name: row.name,
+                        email: row.email,
+                        phone: row.phone,
+                        passwordHash: row.password_hash,
+                        role: row.role,
+                        walletBalance: parseFloat(row.wallet_balance || 0),
+                        favoriteGate: row.favorite_gate,
+                        avatar: row.avatar,
+                        createdAt: row.created_at
+                    };
+                    db.users.push(user);
+                }
+            } catch (pgErr) {
+                console.error('Login PG check error:', pgErr.message);
+            }
+        }
 
         if (!user) {
             return res.status(401).json({ success: false, message: 'Invalid credentials. Please verify your email and password.' });
         }
 
-        const token = createSession(user.id);
+        const token = createSession(user.id, db);
         await writeDb(db);
-        res.cookie('man_token', token, { httpOnly: false, maxAge: 14 * 24 * 60 * 60 * 1000 });
+        setAuthCookie(res, token);
 
         const { passwordHash, ...safeUser } = user;
         return res.json({
@@ -219,7 +295,7 @@ app.post('/api/auth/logout', (req, res) => {
     if (token) {
         invalidateSession(token);
     }
-    res.clearCookie('man_token');
+    res.clearCookie('man_token', { path: '/' });
     return res.json({ success: true, message: 'Signed out successfully.' });
 });
 

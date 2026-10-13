@@ -475,7 +475,10 @@
 
             // Check if already authenticated
             try {
-                const res = await fetch('/api/auth/me', { credentials: 'include' });
+                const token = localStorage.getItem('man_token') || '';
+                const headers = {};
+                if (token) headers['Authorization'] = 'Bearer ' + token;
+                const res = await fetch('/api/auth/me', { credentials: 'include', headers });
                 if (res.ok) {
                     const data = await res.json();
                     if (data.success) {
