@@ -59,6 +59,18 @@
       "favoriteGate": "Gate 2 (General Entrance)",
       "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
       "createdAt": "2026-10-02T00:35:10.724Z"
+    },
+    {
+      "id": "user_1791876183466_8atwc",
+      "name": "Neon Live Fan",
+      "email": "neon_fan@manstadium.ng",
+      "phone": "+2348011223344",
+      "passwordHash": "dda69783f28fdf6f1c5a83e8400f2472e9300887d1dffffe12a07b92a3d0aa25",
+      "role": "member",
+      "walletBalance": 15000,
+      "favoriteGate": "Gate 2 (General Entrance)",
+      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
+      "createdAt": "2026-10-13T07:23:03.468Z"
     }
   ],
   "events": [
@@ -79,7 +91,7 @@
       },
       "capacity": 60491,
       "availableSeats": 1417,
-      "createdAt": "2026-10-06T23:15:25.927Z"
+      "createdAt": "2026-10-13T07:20:06.662Z"
     },
     {
       "id": "ev_2",
@@ -98,7 +110,7 @@
       },
       "capacity": 50000,
       "availableSeats": 859,
-      "createdAt": "2026-10-06T23:15:25.940Z"
+      "createdAt": "2026-10-13T07:20:07.160Z"
     },
     {
       "id": "ev_3",
@@ -117,7 +129,7 @@
       },
       "capacity": 45000,
       "availableSeats": 2150,
-      "createdAt": "2026-10-06T23:15:25.941Z"
+      "createdAt": "2026-10-13T07:20:07.832Z"
     },
     {
       "id": "ev_4",
@@ -136,7 +148,7 @@
       },
       "capacity": 60491,
       "availableSeats": 3399,
-      "createdAt": "2026-10-06T23:15:25.942Z"
+      "createdAt": "2026-10-13T07:20:08.510Z"
     }
   ],
   "tickets": [
@@ -268,6 +280,16 @@
     }
   ],
   "transactions": [
+    {
+      "id": "TXN-TOP-474890",
+      "userId": "user_1791876183466_8atwc",
+      "type": "TOPUP",
+      "amount": 15000,
+      "description": "New Stadium Member Welcome Credit Bonus",
+      "reference": "WELCOME-BONUS-2026",
+      "date": "2026-10-13T07:23:03.468Z",
+      "status": "SUCCESS"
+    },
     {
       "id": "TXN-TOP-654686",
       "userId": "user_steward_01",
